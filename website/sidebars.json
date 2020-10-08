@@ -68,12 +68,12 @@
       "tutorials/create-your-first-substrate-chain/interact"
     ]
   },
-  "add-a-pallet": {
+  "playground": {
     "Add a Pallet to Your Runtime": [
-      "tutorials/add-a-pallet/index",
-      "tutorials/add-a-pallet/import-a-pallet",
-      "tutorials/add-a-pallet/configure-a-pallet",
-      "tutorials/add-a-pallet/use-a-pallet"
+      "tutorials/playground/index",
+      "tutorials/playground/import-a-pallet",
+      "tutorials/playground/configure-a-pallet",
+      "tutorials/playground/use-a-pallet"
     ]
   },
   "upgrade-a-chain": {

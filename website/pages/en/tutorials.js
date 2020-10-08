@@ -40,7 +40,7 @@ const tutorialCardData = [{
   length: "2",
   prerequisite: false,
   version: "2.0.0",
-  href: 'tutorials/add-a-pallet/',
+  href: 'tutorials/playground/',
 }, {
   title: "Upgrade a Chain",
   text: "Perform a forkless runtime upgrade on a running Substrate network.",
