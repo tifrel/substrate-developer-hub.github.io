@@ -65,11 +65,13 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::metadata(T::AccountId = "AccountId")]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	#[pallet::metadata(T::AccountId = "AccountId")]
 	pub enum Event<T: Config> {
-		/// Event documentation should end with an array that provides descriptive names for event
-		/// parameters. [something, who]
-		SomethingStored(u32, T::AccountId),
-	}
+	/// Event emitted when a proof has been claimed. [who, claim]
+        ClaimCreated(T::AccountId, Vec<u8>),
+        /// Event emitted when a claim is revoked by the owner. [who, claim]
+        ClaimRevoked(T::AccountId, Vec<u8>),
+    }
 
             // Store the proof with the sender and block number.
            Proofs::<T>::insert(&proof, (&sender, current_block));
@@ -94,16 +96,12 @@ pub mod pallet {
 			// Update storage.
 			<Something<T>>::put(something);
 
-			// Emit an event.
-			Self::deposit_event(Event::SomethingStored(something, who));
-			// Return a successful DispatchResultWithPostInfo
-			Ok(().into())
-		}
+            // Get the block number from the FRAME System module.
+            let current_block = <frame_system::Module<T>>::block_number();
 
-		/// An example dispatchable that may throw a custom error.
-		#[pallet::weight(10_000 + T::DbWeight::get().reads_writes(1,1))]
-		pub fn cause_error(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
-			let _who = ensure_signed(origin)?;
+            // Store the proof with the sender and block number.
+           Proofs::<T>::insert(&proof, (&sender, current_block));
+           
 
             // Remove claim from storage.
             Proofs::<T>::remove(&proof);
