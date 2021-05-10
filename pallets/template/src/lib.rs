@@ -60,8 +60,16 @@ pub mod pallet {
             // Verify that the specified proof has not already been claimed.         
             ensure!(!Proofs::<T>::contains_key(&proof), Error::<T>::ProofAlreadyClaimed);
 
-            // Get the block number from the FRAME System module.
-            let current_block = <frame_system::Module<T>>::block_number();
+	// Pallets use events to inform users when important changes are made.
+	// https://substrate.dev/docs/en/knowledgebase/runtime/events
+	#[pallet::event]
+	#[pallet::metadata(T::AccountId = "AccountId")]
+	#[pallet::generate_deposit(pub(super) fn deposit_event)]
+	pub enum Event<T: Config> {
+		/// Event documentation should end with an array that provides descriptive names for event
+		/// parameters. [something, who]
+		SomethingStored(u32, T::AccountId),
+	}
 
             // Store the proof with the sender and block number.
            Proofs::<T>::insert(&proof, (&sender, current_block));
@@ -83,14 +91,19 @@ pub mod pallet {
             // https://substrate.dev/docs/en/knowledgebase/runtime/origin
             let sender = ensure_signed(origin)?;
 
-            // Verify that the specified proof has been claimed.
-            ensure!(Proofs::<T>::contains_key(&proof), Error::<T>::NoSuchProof);
+			// Update storage.
+			<Something<T>>::put(something);
 
-            // Get owner of the claim.
-            let (owner, _) = Proofs::<T>::get(&proof);
+			// Emit an event.
+			Self::deposit_event(Event::SomethingStored(something, who));
+			// Return a successful DispatchResultWithPostInfo
+			Ok(().into())
+		}
 
-            // Verify that sender of the current call is the claim owner.
-            ensure!(sender == owner, Error::<T>::NotProofOwner);
+		/// An example dispatchable that may throw a custom error.
+		#[pallet::weight(10_000 + T::DbWeight::get().reads_writes(1,1))]
+		pub fn cause_error(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
+			let _who = ensure_signed(origin)?;
 
             // Remove claim from storage.
             Proofs::<T>::remove(&proof);
